@@ -3,25 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <title>Shopee OAuth Redirect</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+    ul {
+      background: #ecf0f1;
+      padding: 15px;
+      border-radius: 5px;
+      max-width: 600px;
+      word-break: break-all;
+    }
+    li {
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+    .no-params {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <h2>Shopee OAuth Redirect Page</h2>
-  <p id="code"></p>
+  <div id="params-container"></div>
 
   <script>
-    // Fungsi untuk mengambil parameter URL 'code'
-    function getQueryParam(param) {
+    // Fungsi untuk mengambil semua query parameter sebagai objek
+    function getAllQueryParams() {
+      const params = {};
       const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
+      for (const [key, value] of urlParams.entries()) {
+        params[key] = value;
+      }
+      return params;
     }
 
-    const code = getQueryParam('code');
-    if (code) {
-      document.getElementById('code').textContent = 'Authorization code: ' + code;
-      // Anda bisa copy kode ini secara manual untuk ditukar dengan access token
-      console.log('Authorization code:', code);
+    const params = getAllQueryParams();
+    const container = document.getElementById('params-container');
+
+    if (Object.keys(params).length === 0) {
+      container.innerHTML = '<p class="no-params">No query parameters found in URL.</p>';
     } else {
-      document.getElementById('code').textContent = 'No authorization code found in URL.';
+      let html = '<p>Received query parameters:</p><ul>';
+      for (const key in params) {
+        html += `<li><strong>${key}</strong>: ${params[key]}</li>`;
+      }
+      html += '</ul>';
+      container.innerHTML = html;
+
+      // Optional: log ke console juga
+      console.log('Query parameters:', params);
     }
   </script>
 </body>
